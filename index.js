@@ -108,7 +108,7 @@ module.exports = function (ret, conf, settings, opt) { //打包后处理
         asyncList.forEach(function (async) {
             var id = async.getId();
             if (ret.ids[id]){
-                if (ret.ids[id].isCssLike){
+                if (ret.ids[id].isCssLike && !async.extras.useAsync){
                     return false;
                 }
             }else{
@@ -318,7 +318,7 @@ module.exports = function (ret, conf, settings, opt) { //打包后处理
                 return false;
             }
             //将样式表资源强制设定为同步加载，避免异步加载样式表
-            if (async.isCssLike) {
+            if (async.isCssLike && !async.extras.useAsync) {
                 depList.push(async);
                 return false;
             }
@@ -363,7 +363,7 @@ module.exports = function (ret, conf, settings, opt) { //打包后处理
     var includeAsyncList = [];
 
     fis.util.map(ret.src, function (subpath, file) {
-        if (settings.include && (file.isJsLike || file.isCssLike) && file.release && fis.util.filter(subpath, settings.include)){
+        if (settings.include && (file.isJsLike || file.jsCssLike) && file.release && fis.util.filter(subpath, settings.include)){
             includeAsyncList.push(file);
             includeAsyncList = includeAsyncList.concat(getDepList(file), getAsyncList(file));
         }
